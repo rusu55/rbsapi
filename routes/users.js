@@ -5,7 +5,7 @@ const _ = require('lodash')
 const router = express.Router()
 
 const { User, validate} = require('../models/user')
-const auth = require('../../middleware/auth')
+const auth = require('../middleware/auth')
 
 router.get('/', auth, (req, res)=>{
     res.send('Usre Router!')
