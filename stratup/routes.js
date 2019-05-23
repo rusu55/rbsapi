@@ -10,6 +10,7 @@ module.exports = function(app){
     app.use(cors())
     app.use('/api/auth', auth)
     app.use('/api/users', users)
-    app.use('/api/profile/me', userProfile)
+    app.use('/api/profile', userProfile)
+    //app.use('/api/profile/:id', userProfile)
 }
 
