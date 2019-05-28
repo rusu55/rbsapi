@@ -31,21 +31,20 @@ router.put('/:id', [auth, validateObjId], async (req, res) =>{
 
   if(error) return res.status(400).send(error.details[0].message)
   
-  //const leadFields = {}
-  //if(name) 
-
-  let lead = await Lead.findOneAndUpdate( 
-    req.params.id, 
-    {name, email, phone, weddingDate } 
-    )
-  
-    let leadProfile = await LeadProfile.findOneAndUpdate(
-    lead.details._id,
-    {
-      venue
+  let lead = await Lead.findById(req.params.id)
+    
+    try{
+      new Fawn.Task()
+        
+        .update('leadprofiles', {_id: lead.details._id }, {venue})
+        .update('leads', {_id: lead._id }, 
+             {name, email, phone, weddingDate })
+        .run()
+        
     }
-  )
- 
+    catch(ex){
+      res.status(500).send("Failure Updating the Lead Profile!")
+    }
     res.send('The Lead Profile Was Updated!')
 })
 
