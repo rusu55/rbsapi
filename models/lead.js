@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
-<<<<<<< HEAD
-
+const Joi = require('joi')
 
 const LeadSchema = new mongoose.Schema({
     name: {
@@ -33,45 +32,17 @@ const LeadSchema = new mongoose.Schema({
     }
 })
 
+function validateLead(data){
 
-module.exports.Lead = mongoose.model('Lead', LeadSchema)
-=======
-const Joi = require('joi')
-
-const leadSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required:true,
-        minlength: 5,
-        maxlength:100,
-    
-   },
-   email:{
-        type: String,
-        required:true,
-        minlength: 5,
-        maxlength:100,
-        unique: true
-   },
-   phone: {
-       type: String,
-   },
-   leadType: {
-       type: String,
-       default: 'hotLead'
-   }
-})
-
-function validateLead(lead){
-    const schema = {
+    schema = {
         name: Joi.string().min(5).max(100).required(),
-        email: Joi.string().min(5).max(100).required(),
-        phone: Joi.string().allow('')
+        email: Joi.string().required().min(5).max(100).email(),
+        phone: Joi.string().allow(''),
+        weddingDate: Joi.date().allow(''),
+        venue: Joi.string().allow('')
     }
 
-    return Joi.validate(lead, schema)
+    return Joi.validate(data, schema)
 }
-
+module.exports.Lead = mongoose.model('Lead', LeadSchema)
 module.exports.validate = validateLead
-module.exports.Lead = mongoose.model('Lead', leadSchema)
->>>>>>> b6497a29bae672c5b7a3152fe7f2f87a4438c549

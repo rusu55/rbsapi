@@ -1,77 +1,83 @@
 const express = require('express')
 const router = express.Router()
-<<<<<<< HEAD
 const _ = require('lodash')
 const mongoose = require('mongoose')
+const Fawn = require('fawn')
 
-const { Lead } = require('../models/lead')
+const auth = require('../middleware/auth')
+const validateObjId = require('../middleware/validateObjId')
+Fawn.init(mongoose)
+
+const { Lead, validate } = require('../models/lead')
 const { LeadProfile } = require('../models/leadprofile')
 
-router.get('/', async (req,res) =>{
+// @ GET route /leads
+// @ private
+// @ list of all leads
+
+router.get('/', [auth], async (req,res) =>{
    const results = await Lead.find().populate('details')
+   if(!results)
         res.send(results)
 })
 
-router.post('/', async (req,res)=>{
-  let lead = await Lead.findOne({email: req.body.email})
-  if(lead) return res.status(400).send('Lead allready registered!')
-
-  let leadProfile = new LeadProfile({_id : new mongoose.Types.ObjectId(), venue: req.body.venue})
-
-  lead = new Lead({ name: req.body.name, email: req.body.email, phone: req.body.phone, weddingDate: req.body.weddingDate, details: leadProfile._id})
-  
-  await leadProfile.save()
- await lead.save()
-
-  
-  res.send(lead)
-})
-
-module.exports = router
-=======
-const Fawn = require('fawn')
-const mongoose = require('mongoose')
-const _ = require('lodash')
-const auth = require('../middleware/auth')
-
-const { LeadProfile }= require('../models/leadsProfile')
-const { Lead, validate } = require('../models/lead')
-
-Fawn.init(mongoose)
-
-router.get('/', [auth], (req,res)=>{
-    res.send("Leads Router")
-})
-
-// @ route /leads
+// @ PUT route /leads/:id
 // @ private
-// @ add new Lead
+// @ update current lead
+
+router.put('/:id', [auth, validateObjId], async (req, res) =>{
+  const { name, email, phone, weddingDate, venue} = req.body
+  const { error } = validate(req.body)
+
+  if(error) return res.status(400).send(error.details[0].message)
+  
+  //const leadFields = {}
+  //if(name) 
+
+  let lead = await Lead.findOneAndUpdate( 
+    req.params.id, 
+    {name, email, phone, weddingDate } 
+    )
+  
+    let leadProfile = await LeadProfile.findOneAndUpdate(
+    lead.details._id,
+    {
+      venue
+    }
+  )
+ 
+    res.send('The Lead Profile Was Updated!')
+})
+
+// @ POST route /leads
+// @ private
+// @ add new lead
 
 router.post('/', [auth], async (req,res)=>{
-    const { error } = validate(_.pick(req.body, ["name", "email", "phone"]))
-    if(error) return res.status(400).send(error.details[0].message)
+  const { name, email, phone, weddingDate, venue} = req.body
+  const { error } = validate(req.body)
 
-    let lead = await Lead.findOne({ email : req.body.email})
-    if(lead) return res.status(400).send("Lead with this email allready registered!")
+  if(error) return res.status(400).send(error.details[0].message)
 
-    lead = new Lead(_.pick(req.body, ["name", "email", "phone"]))
-    let leadProfile = new LeadProfile(_.pick(req.body, ["weddingDate"]))
-    leadProfile.leadId = lead._id
-    
-    
-    try{
-        new Fawn.Task()
-        .save('leads', lead)
-        .save('leadProfiles', leadProfile)
-        .run()
+  let lead = await Lead.findOne({email: email})
+  if(lead) return res.status(400).send('Lead allready registered!')
 
-        res.send('New Lead Created!')
-    }
-    catch(ex){
-        res.status(500).send('Something went wrong!')
-    }
+  let leadProfile = new LeadProfile({_id : new mongoose.Types.ObjectId(), venue: venue})
 
+  lead = new Lead({ name: name, email: email, phone: phone, weddingDate: weddingDate, details: leadProfile._id})
+  
+  try{
+    new Fawn.Task()
+     .save('leadprofiles', leadProfile)
+     .save('leads', lead)
+    . run()
+  
+    res.send(lead)
+  }
+  catch(ex){
+    res.status(500).send('Server Error!')
+  }
+  
 })
 
 module.exports = router
->>>>>>> b6497a29bae672c5b7a3152fe7f2f87a4438c549
