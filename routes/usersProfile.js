@@ -1,5 +1,6 @@
 const express = require('express')
 const auth = require('../middleware/auth')
+const ObjId = require('../middleware/validateObjId')
 const { UserProfile } = require('../models/userProfile')
 
 const router = express.Router()
@@ -8,7 +9,7 @@ const router = express.Router()
 // @ private
 // @ get current user profile
 
-router.get('/me', auth, async  (req,res) =>{
+router.get('/me', [auth], async  (req,res) =>{
     let userProfile = await UserProfile.findOne({user: req.user._id})
     if(!userProfile) return res.status(400).send('Profile not Found!')
 
@@ -45,7 +46,7 @@ router.post('/me', auth, async (req,res)=>{
 // @ private
 // @ update current user profile
 
-router.put('/:id', auth, async (req,res)=>{
+router.put('/:id', [auth, ObjId], async (req,res)=>{
         
     //console.log(req.body)
     const profileFields = {}
