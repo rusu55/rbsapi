@@ -14,5 +14,6 @@ module.exports = function(app){
     app.use('/api/profile', userProfile)
     app.use('/api/profile/:id', userProfile)
     app.use('/api/leads', leads)
+    app.use('/api/leads/:id', leads)
 }
 
