@@ -3,6 +3,7 @@ const PropTypes = require('prop-types')
 const _ = require('lodash')
 
 const ObjId = require('../middleware/validateObjId')
+const auth = require('../middleware/auth')
 const { Vendor, validate } = require('../models/vendor')
 
 const router = express.Router()
@@ -12,7 +13,7 @@ const router = express.Router()
 // @ private
 // @ list of all vendors
 
-router.get('/', async (req,res) =>{
+router.get('/', [auth], async (req,res) =>{
     const result = await Vendor.find().select('-__v')
     if(!result) return res.status(400).send('No Vendors registered!')
 
@@ -23,7 +24,7 @@ router.get('/', async (req,res) =>{
 // @ private
 // @ create vendor profile
 
-router.post('/', async(req, res) => {
+router.post('/', [auth], async(req, res) => {
     const { error } = validate(req.body)
     const { email } = req.body
     if(error) return res.status(400).send(error.details[0].message)
@@ -41,7 +42,7 @@ router.post('/', async(req, res) => {
 // @ private
 // @ edit vendor profile
 
-router.put('/:id', [ObjId], async(req, res) => {
+router.put('/:id', [auth, ObjId], async(req, res) => {
     const { error } = validate(req.body)
     const { email } = req.body
     if(error) return res.status(400).send(error.details[0].message)
@@ -56,7 +57,7 @@ router.put('/:id', [ObjId], async(req, res) => {
 // @ private
 // @ delete vendor profile
 
-router.delete('/:id', [ObjId], async(req, res) => {
+router.delete('/:id', [auth, ObjId], async(req, res) => {
     
     const vendor = await Vendor.findByIdAndRemove(req.params.id);
 
