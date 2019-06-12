@@ -17,9 +17,8 @@ const { LeadProfile } = require('../models/leadprofile')
 
 router.get('/', [auth], async (req,res) =>{
    const results = await Lead.find().populate('details')
-  // if(!results)
-     //   res.status(400).send('No Leads Registerd!')
-//})
+   if(!results) return res.status(400).send('No Leads Registerd!')
+
      res.send(results)
 })
 
