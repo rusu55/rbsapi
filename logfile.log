@@ -355,3 +355,5 @@
 {"level":"info","message":"Conected to MongoDB","timestamp":"2019-06-12T20:39:21.546Z"}
 {"level":"info","message":"Listening Port: 3000","timestamp":"2019-06-12T20:40:13.316Z"}
 {"level":"info","message":"Conected to MongoDB","timestamp":"2019-06-12T20:40:14.340Z"}
+{"level":"info","message":"Listening Port: 3000","timestamp":"2019-06-12T20:40:22.382Z"}
+{"level":"info","message":"Conected to MongoDB","timestamp":"2019-06-12T20:40:23.406Z"}
