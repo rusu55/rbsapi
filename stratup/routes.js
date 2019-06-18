@@ -19,5 +19,6 @@ module.exports = function(app){
     app.use('/api/leads/:id', leads)
     app.use('/api/vendors', vendors)
     app.use('/api/tasks', tasks)
+    app.use('/api/tasks/:id', tasks)
 }
 
