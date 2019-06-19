@@ -16,10 +16,16 @@ const { LeadProfile } = require('../models/leadprofile')
 // @ list of all leads
 
 router.get('/', [auth], async (req,res) =>{
-   const results = await Lead.find().populate('details')
-   if(!results) return res.status(400).send('No Leads Registerd!')
+  const leadsCount = await Lead.countDocuments()
+  const leads = await Lead.find()
+                           .limit(parseInt(req.query.limit))
+                           .skip(parseInt(req.query.skip))
+                           .populate('details')
+                           .exec()
 
-     res.send(results)
+   if(!leads) return res.status(400).send('No Leads Registerd!')
+
+     res.send({leads, leadsCount })
 })
 
 
