@@ -12,6 +12,7 @@ const { Lead, validate } = require('../models/lead')
 const { LeadProfile } = require('../models/leadprofile')
 
 // @ GET route /leads
+// @ GET route /leads?limit=2&skip=0
 // @ private
 // @ list of all leads
 
