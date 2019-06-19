@@ -12,14 +12,17 @@ const { Lead, validate } = require('../models/lead')
 const { LeadProfile } = require('../models/leadprofile')
 
 // @ GET route /leads
+// @ GET route /leads?limit=2&skip=0
 // @ private
 // @ list of all leads
 
 router.get('/', [auth], async (req,res) =>{
-   const results = await Lead.find().populate('details')
+    const count = await Lead.count()    
+    const results = await Lead.find().limit(parseInt(req.query.limit)).skip(parseInt(req.query.skip)).populate('details')
+
    if(!results) return res.status(400).send('No Leads Registerd!')
 
-     res.send(results)
+     res.send({data: results, count})
 })
 
 
