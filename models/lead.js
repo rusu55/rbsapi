@@ -29,8 +29,19 @@ const LeadSchema = new mongoose.Schema({
     details: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Leadprofile'
+    },
+    notes: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Note'
     }
+   
 }, {timestamps: true})
+
+//LeadSchema.virtual('notes', {
+  //  ref: 'Note',
+   // localField: '_id',
+   // foreignField: 'owner'
+//})
 
 function validateLead(data){
 

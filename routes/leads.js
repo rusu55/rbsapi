@@ -12,15 +12,25 @@ const { Lead, validate } = require('../models/lead')
 const { LeadProfile } = require('../models/leadprofile')
 
 // @ GET route /leads
-// @ GET route /leads?limit=2&skip=0
+// @ GET route /leads?limit=2&skip=0&sortBy=name:asc
 // @ private
 // @ list of all leads
 
 router.get('/', [auth], async (req,res) =>{
+  let parts =[]
+  if (req.query.sortBy) {
+     parts = req.query.sortBy.split(':')
+    
+    parts[1] === 'desc' ? parts[1] = -1 : parts[1] = 1
+   
+}
+
+
   const leadsCount = await Lead.countDocuments()
   const leads = await Lead.find()
                            .limit(parseInt(req.query.limit))
                            .skip(parseInt(req.query.skip))
+                           .sort([parts])
                            .populate('details')
                            .exec()
 
@@ -36,7 +46,7 @@ router.get('/', [auth], async (req,res) =>{
 
 router.get('/:id', [auth, validateObjId], async (req, res) =>{
   
-  const lead = await Lead.findById(req.params.id).populate('details') 
+  const lead = await Lead.findById(req.params.id).populate('details').populate('notes')
     res.send(lead)
 })
 
