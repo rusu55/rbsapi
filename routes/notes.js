@@ -6,8 +6,9 @@ const validateObject = require('../middleware/validateObjId')
 
 const { Note, validate } = require('../models/note')
 
-router.get('/', [auth], (req,res)=>{
-    res.send('Notes Router')
+router.get('/', [auth], async (req,res)=>{
+    const notes = await Note.find().populate('owner')
+    console.log(notes)
 })
 
 router.post('/:id', [auth, validateObject], async (req,res)=>{

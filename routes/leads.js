@@ -11,6 +11,7 @@ Fawn.init(mongoose)
 const { Lead, validate } = require('../models/lead')
 const { LeadProfile } = require('../models/leadprofile')
 
+
 // @ GET route /leads
 // @ GET route /leads?limit=2&skip=0&sortBy=name:asc
 // @ private
@@ -46,8 +47,10 @@ router.get('/', [auth], async (req,res) =>{
 
 router.get('/:id', [auth, validateObjId], async (req, res) =>{
   
-  const lead = await Lead.findById(req.params.id).populate('details').populate('notes')
-    res.send(lead)
+ const lead = await Lead.findById(req.params.id).populate('details')
+  await lead.populate('notes').execPopulate()
+  res.send({lead, notes: lead.notes})
+    
 })
 
 // @ PUT route /leads/:id

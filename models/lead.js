@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
 const Joi = require('joi')
+//const { Note } = require('./note')
 
-const LeadSchema = new mongoose.Schema({
+const leadSchema = new mongoose.Schema({
     name: {
         type: String,
         minlength: 5,
@@ -30,18 +31,14 @@ const LeadSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Leadprofile'
     },
-    notes: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Note'
-    }
-   
+       
 }, {timestamps: true})
 
-//LeadSchema.virtual('notes', {
-  //  ref: 'Note',
-   // localField: '_id',
-   // foreignField: 'owner'
-//})
+leadSchema.virtual('notes', {
+  ref: 'Note',
+  localField: '_id',
+  foreignField: 'owner'
+ })
 
 function validateLead(data){
 
@@ -55,5 +52,5 @@ function validateLead(data){
 
     return Joi.validate(data, schema)
 }
-module.exports.Lead = mongoose.model('Lead', LeadSchema)
+module.exports.Lead = mongoose.model('Lead', leadSchema)
 module.exports.validate = validateLead
