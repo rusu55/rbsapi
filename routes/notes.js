@@ -15,6 +15,18 @@ router.get('/', [auth], async (req,res)=>{
     console.log(notes)
 })
 
+// @ GET Note route /notes/:id
+// @ private
+// @ get notes for the current Lead
+
+router.get('/:id', [auth, validateObject], async (req,res)=>{
+    const notes = await Note.find({owner: req.params.id})
+
+    if(!notes) return res.status(404).send('No Notes found!')
+
+    res.send(notes)
+})
+
 // @ POST Note route /notes/:id
 // @ private
 // @ create new note for the current Lead
