@@ -63,7 +63,7 @@ router.delete('/:id', [auth, validateObject], async (req, res)=>{
     console.log('sdasdasd')
     const note = await Note.findByIdAndRemove(req.params.id)
 
-    if(!note) return res.status(404).send("The Note with the given ID was not found.")
+    //if(!note) return res.status(404).send("The Note with the given ID was not found.")
 
     res.send(`The Note was Deleted!`)
 })
