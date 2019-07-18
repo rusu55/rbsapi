@@ -48,10 +48,10 @@ router.post('/:id', [auth, validateObject], async (req,res)=>{
 
 router.put('/:id', [auth, validateObject], async (req, res)=>{
     const { error } = validate(req.body)
-    if(error) return res.status(400).send(error.details[0].message)
+    if(error) return res.status(400).send(error.details[0].message)   
+        const note = await Note.findOneAndUpdate({_id: req.params.id}, req.body, {new: true})
 
-    const note = await Note.findByIdAndUpdate(req.params.id, req.body)
-
+    if(!note) return res.status(404).send('Note with given ID not Found!')
     res.send(note)
 })
 
