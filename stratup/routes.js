@@ -21,6 +21,7 @@ module.exports = function(app){
     app.use('/api/vendors', vendors)
     app.use('/api/tasks', tasks)
     app.use('/api/tasks/:id', tasks)
+    app.use('/api/tasks/owner/:id', tasks)
     app.use('/api/notes', notes)
 }
 

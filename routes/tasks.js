@@ -12,6 +12,12 @@ router.get('/', [auth], async (req,res)=>{
     res.send(tasks)
 })
 
+router.get('/owner/:id', [auth, validateObjId], async (req,res) =>{
+   const tasks = await Task.find({emiter: req.user._id, owner: req.params.id}).select('-__v').sort('taskDate')
+   if(!tasks) return res.status(400).send('No Tasks Found!')
+   res.send(tasks)
+})
+
 router.post('/', [auth], async (req,res)=>{    
     const task = new Task({...req.body, owner: req.user._id})
     await task.save()

@@ -17,6 +17,12 @@ const taskSchema = new mongoose.Schema({
         required: true,
         ref: 'user'
     },
+    emiter: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'lead'
+    },
+
     taskDate: {
         type: Date,
         default: Date.now
